@@ -36,10 +36,51 @@ class MyHomePage extends StatelessWidget {
       body: Stack(
         children: [
           Padding(
-              child: Image.asset('assets/dgb.png'),
-              padding: EdgeInsets.all(20)),
+            child: Image.asset('assets/dgb.png'),
+            padding: EdgeInsets.all(20),
+          ),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                children: [
+                  _buildScan(),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  _buildGenerator(),
+                ],
+              ),
+            ),
+          )
         ],
       ),
     );
   }
+
+  _buildScan() => Column(
+        children: [
+          Image.asset('assets/dgb.png'),
+          SizedBox(
+            height: 10,
+          ),
+          RaisedButton(
+            onPressed: () {},
+            child: Text("SCAN"),
+          )
+        ],
+      );
+
+  _buildGenerator() => Column(
+        children: [
+          Image.asset('assets/dgb.png'),
+          SizedBox(
+            height: 10,
+          ),
+          RaisedButton(
+            onPressed: () {},
+            child: Text("SCAN"),
+          )
+        ],
+      );
 }
