@@ -38,8 +38,6 @@ class MyHomePage extends StatelessWidget {
           Padding(
             child: Image.asset(
               'assets/dgb.png',
-              width: 110,
-              height: 110,
             ),
             padding: EdgeInsets.all(20),
           ),
@@ -50,10 +48,11 @@ class MyHomePage extends StatelessWidget {
                 children: [
                   _buildScan(),
                   SizedBox(
-                    width: 30,
+                    width: 100,
                   ),
                   _buildGenerator(),
                 ],
+                mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
           )
