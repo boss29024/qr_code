@@ -60,7 +60,11 @@ class MyHomePage extends StatelessWidget {
 
   _buildScan() => Column(
         children: [
-          Image.asset('assets/dgb.png'),
+          Image.asset(
+            'assets/dgb.png',
+            width: 110,
+            height: 110,
+          ),
           SizedBox(
             height: 10,
           ),
@@ -73,7 +77,11 @@ class MyHomePage extends StatelessWidget {
 
   _buildGenerator() => Column(
         children: [
-          Image.asset('assets/dgb.png'),
+          Image.asset(
+            'assets/dgb.png',
+            width: 110,
+            height: 110,
+          ),
           SizedBox(
             height: 10,
           ),
