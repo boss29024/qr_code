@@ -36,7 +36,11 @@ class MyHomePage extends StatelessWidget {
       body: Stack(
         children: [
           Padding(
-            child: Image.asset('assets/dgb.png'),
+            child: Image.asset(
+              'assets/dgb.png',
+              width: 110,
+              height: 110,
+            ),
             padding: EdgeInsets.all(20),
           ),
           Center(
