@@ -33,6 +33,13 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
       ),
+      body: Stack(
+        children: [
+          Padding(
+              child: Image.asset('assets/dgb.png'),
+              padding: EdgeInsets.all(20)),
+        ],
+      ),
     );
   }
 }
