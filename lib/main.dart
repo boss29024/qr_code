@@ -69,11 +69,13 @@ class MyHomePage extends StatelessWidget {
             height: 110,
           ),
           SizedBox(
-            height: 10,
+            height: 15,
           ),
           RaisedButton(
             onPressed: () {},
             child: Text("SCAN"),
+            textColor: Colors.white,
+            color: Colors.blue,
           )
         ],
       );
@@ -86,11 +88,13 @@ class MyHomePage extends StatelessWidget {
             height: 110,
           ),
           SizedBox(
-            height: 10,
+            height: 15,
           ),
           RaisedButton(
             onPressed: () {},
             child: Text("SCAN"),
+            textColor: Colors.white,
+            color: Colors.orange,
           )
         ],
       );
