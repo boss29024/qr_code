@@ -37,9 +37,9 @@ class MyHomePage extends StatelessWidget {
         children: [
           Padding(
             child: Image.asset(
-              'assets/dgb.png',
+              'assets/banner.jpg',
             ),
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.all(30),
           ),
           Center(
             child: Padding(
@@ -52,7 +52,6 @@ class MyHomePage extends StatelessWidget {
                   ),
                   _buildGenerator(),
                 ],
-                mainAxisAlignment: MainAxisAlignment.center,
               ),
             ),
           )
@@ -61,10 +60,14 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  _buildScan() => Column(
+  _buildScan() => Expanded(
+      flex: 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            'assets/dgb.png',
+            'assets/ic_scan_qrcode.png',
             width: 110,
             height: 110,
           ),
@@ -78,12 +81,16 @@ class MyHomePage extends StatelessWidget {
             color: Colors.blue,
           )
         ],
-      );
+      ));
 
-  _buildGenerator() => Column(
+  _buildGenerator() => Expanded(
+      flex: 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            'assets/dgb.png',
+            'assets/ic_generate_qrcode.png',
             width: 110,
             height: 110,
           ),
@@ -92,10 +99,10 @@ class MyHomePage extends StatelessWidget {
           ),
           RaisedButton(
             onPressed: () {},
-            child: Text("SCAN"),
+            child: Text("GENERATOR"),
             textColor: Colors.white,
-            color: Colors.orange,
+            color: Colors.tealAccent[700],
           )
         ],
-      );
+      ));
 }
