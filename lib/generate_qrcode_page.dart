@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -39,7 +39,10 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
     );
   }
 
-  void share() {}
+  void share() {
+    final channel = MethodChannel('cm.share/share');
+    channel.invokeListMethod('shareFile', 'image.png');
+  }
 
   _buildContent() => Padding(
         padding: EdgeInsets.only(left: 30, right: 30, top: 40),
