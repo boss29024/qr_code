@@ -1,9 +1,13 @@
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
+
+import 'generate_qrcode_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -55,7 +59,7 @@ class MyHomePage extends StatelessWidget {
                   SizedBox(
                     width: 100,
                   ),
-                  _buildGenerator(),
+                  _buildGenerator(context: context),
                 ],
               ),
             ),
@@ -91,28 +95,41 @@ class MyHomePage extends StatelessWidget {
         ),
       );
 
-  _buildGenerator() => Expanded(
-      flex: 1,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/ic_generate_qrcode.png',
-            width: 110,
-            height: 110,
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          RaisedButton(
-            onPressed: () {},
-            child: Text("GENERATOR"),
-            textColor: Colors.white,
-            color: Colors.tealAccent[700],
-          )
-        ],
-      ));
+  _buildGenerator({BuildContext context}) {
+
+    final text = "GENERATOR";
+    return Expanded(
+        flex: 1,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              'assets/ic_generate_qrcode.png',
+              width: 110,
+              height: 110,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GenerateQRCodePage(
+                      title: text,
+                    ),
+                  ),
+                );
+              },
+              child: Text(text),
+              textColor: Colors.white,
+              color: Colors.tealAccent[700],
+            )
+          ],
+        ));
+  }
 
   Future scanQRCode({BuildContext context}) async {
     try {
