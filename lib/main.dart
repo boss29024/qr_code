@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter/services.dart';
-
 import 'dart:async';
 
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:my_qrcode/generate_qrcode_page.dart';
+import 'package:flutter/services.dart';
+
 void main() {
   runApp(MyApp());
 }
@@ -66,28 +65,31 @@ class MyHomePage extends StatelessWidget {
     );
   }
 
-  _buildScan() => Expanded(
-      flex: 1,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/ic_scan_qrcode.png',
-            width: 110,
-            height: 110,
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          RaisedButton(
-            onPressed: scanQRCode(),
-            child: Text("SCAN"),
-            textColor: Colors.white,
-            color: Colors.blue,
-          )
-        ],
-      ));
+  _buildScan({BuildContext context}) => Expanded(
+        flex: 1,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Image.asset(
+              "assets/ic_scan_qrcode.png",
+              width: 110,
+              height: 110,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            RaisedButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text("SCAN"),
+              onPressed: () {
+                scanQRCode(context: context);
+              },
+            )
+          ],
+        ),
+      );
 
   _buildGenerator() => Expanded(
       flex: 1,
@@ -115,7 +117,7 @@ class MyHomePage extends StatelessWidget {
   Future scanQRCode({BuildContext context}) async {
     try {
       String barcode = await BarcodeScanner.scan();
-      showAlertDialog(result: barcode, context: context);
+      showAlertDialog(context: context, result: barcode);
     } on PlatformException catch (exception) {
       if (exception.code == BarcodeScanner.CameraAccessDenied) {
         showAlertDialog(
@@ -127,5 +129,26 @@ class MyHomePage extends StatelessWidget {
     } catch (exception) {
       print('Unknown error: $exception');
     }
+  }
+
+  showAlertDialog({BuildContext context, String result}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Result"),
+          content: Text(result),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Close"),
+            )
+          ],
+        );
+      },
+    );
   }
 }
