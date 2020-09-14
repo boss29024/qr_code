@@ -28,6 +28,7 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
