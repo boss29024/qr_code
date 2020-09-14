@@ -15,7 +15,10 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [IconButton(icon: Icon(Icons.share), onPressed: share)],
       ),
     );
   }
+
+  void share() {}
 }
