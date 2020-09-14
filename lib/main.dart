@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter/services.dart';
+
+import 'dart:async';
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:my_qrcode/generate_qrcode_page.dart';
 void main() {
   runApp(MyApp());
 }
@@ -75,7 +81,7 @@ class MyHomePage extends StatelessWidget {
             height: 15,
           ),
           RaisedButton(
-            onPressed: () {},
+            onPressed: scanQRCode(),
             child: Text("SCAN"),
             textColor: Colors.white,
             color: Colors.blue,
@@ -105,4 +111,21 @@ class MyHomePage extends StatelessWidget {
           )
         ],
       ));
+
+  Future scanQRCode({BuildContext context}) async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      showAlertDialog(result: barcode, context: context);
+    } on PlatformException catch (exception) {
+      if (exception.code == BarcodeScanner.CameraAccessDenied) {
+        showAlertDialog(
+            result: 'not grant permission to open the camera',
+            context: context);
+      } else {
+        print('Unknown error: $exception');
+      }
+    } catch (exception) {
+      print('Unknown error: $exception');
+    }
+  }
 }
