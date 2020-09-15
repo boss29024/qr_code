@@ -1,107 +1,166 @@
-import 'dart:io';
-import 'dart:typed_data';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+
 import 'package:flutter/services.dart';
-
-import 'package:qr_flutter/qr_flutter.dart';
-
-import 'package:flutter/rendering.dart';
 
 import 'dart:async';
 
-import 'package:path_provider/path_provider.dart';
+import 'package:barcode_scan/barcode_scan.dart';
 
-class GenerateQRCodePage extends StatefulWidget {
-  String title;
+import 'package:qr_code/generate_qrcode_page.dart';
 
-  GenerateQRCodePage({this.title});
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  final title = "MY QR Code";
 
   @override
-  _GenerateQRCodePageState createState() => _GenerateQRCodePageState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: title,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(title: title),
+    );
+  }
 }
 
-class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
-  GlobalKey globalKey = GlobalKey();
+class MyHomePage extends StatelessWidget {
+  String title;
 
-  final TextEditingController _textController = TextEditingController();
-
-  String _dataQRCode = "";
-
-  @override
-  void initState() {
-    super.initState();
-
-    _textController.addListener(Change);
-  }
+  MyHomePage({this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.share),
-            onPressed: shared,
+        title: Text(title),
+      ),
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            child: Image.asset(
+              'assets/banner.jpg',
+              fit: BoxFit.cover,
+            ),
+            padding: EdgeInsets.all(30),
           ),
+          Center(
+            child: Padding(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              child: Row(
+                children: <Widget>[
+                  _buildScan(context: context),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  _buildGenerator(context: context),
+                ],
+              ),
+            ),
+          )
         ],
       ),
-      body: _buildContent(),
     );
   }
 
-  Future shared() async {
-    try {
-      RenderRepaintBoundary boundary =
-          globalKey.currentContext.findRenderObject();
-      var image = await boundary.toImage();
-      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
-      Uint8List pngBytes = byteData.buffer.asUint8List();
-
-      final tempDir = await getTemporaryDirectory();
-      final file = await File('${tempDir.path}/image.png').create();
-      await file.writeAsBytes(pngBytes);
-
-      final channel = MethodChannel('cm.share/share');
-      channel.invokeMethod('shareFile', 'image.png');
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  _buildContent() => Padding(
-        padding: EdgeInsets.only(left: 30, right: 30, top: 40),
+  _buildScan({BuildContext context}) => Expanded(
+        flex: 1,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            TextField(
-              controller: _textController,
-              decoration: InputDecoration(
-                  hintText: 'Enter the text to create the qr code'),
+            Image.asset(
+              "assets/ic_scan_qrcode.png",
+              width: 110,
+              height: 110,
             ),
             SizedBox(
-              height: 40,
+              height: 15,
             ),
-            RepaintBoundary(
-              key: globalKey,
-              child: QrImage(
-                backgroundColor: Colors.white,
-                data: _dataQRCode,
-                size: 150,
-                onError: (exception) {
-                  print("Error QRCODE: $exception");
-                },
-              ),
+            RaisedButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              child: Text("SCAN"),
+              onPressed: () {
+                scanQRCode(context: context);
+              },
             )
           ],
         ),
       );
 
-  Change() {
-    setState(() {
-      _dataQRCode = _textController.text;
-    });
+  _buildGenerator({BuildContext context}) {
+    final text = "GENERATOR";
+    return Expanded(
+      flex: 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Image.asset(
+            "assets/ic_generate_qrcode.png",
+            width: 110,
+            height: 110,
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          RaisedButton(
+            color: Colors.tealAccent[700],
+            textColor: Colors.white,
+            child: Text(text),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => GenerateQRCodePage(
+                          title: text,
+                        )),
+              );
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  Future scanQRCode({BuildContext context}) async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      showAlertDialog(result: barcode, context: context);
+    } on PlatformException catch (exception) {
+      if (exception.code == BarcodeScanner.CameraAccessDenied) {
+        showAlertDialog(
+            result: 'not grant permission to open the camera',
+            context: context);
+      } else {
+        print('Unknown error: $exception');
+      }
+    } catch (exception) {
+      print('Unknown error: $exception');
+    }
+  }
+
+  showAlertDialog({BuildContext context, String result}) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Result"),
+          content: Text(result),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Close"),
+            )
+          ],
+        );
+      },
+    );
   }
 }
