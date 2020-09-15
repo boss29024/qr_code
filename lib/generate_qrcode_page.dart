@@ -40,8 +40,8 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
   }
 
   void share() {
-    // final channel = MethodChannel('cm.share/share');
-    // channel.invokeListMethod('shareFile', 'image.png');
+     final channel = MethodChannel('cm.share/share');
+     channel.invokeListMethod('shareFile', 'image.png');
   }
 
   _buildContent() => Padding(
