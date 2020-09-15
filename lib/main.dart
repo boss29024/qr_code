@@ -23,7 +23,6 @@ class GenerateQRCodePage extends StatefulWidget {
 }
 
 class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
-
   GlobalKey globalKey = GlobalKey();
 
   final TextEditingController _textController = TextEditingController();
@@ -57,7 +56,7 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
   Future shared() async {
     try {
       RenderRepaintBoundary boundary =
-      globalKey.currentContext.findRenderObject();
+          globalKey.currentContext.findRenderObject();
       var image = await boundary.toImage();
       ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
       Uint8List pngBytes = byteData.buffer.asUint8List();
