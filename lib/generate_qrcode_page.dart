@@ -1,5 +1,11 @@
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'package:path_provider/path_provider.dart';
 
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -15,6 +21,8 @@ class GenerateQRCodePage extends StatefulWidget {
 }
 
 class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
+  GlobalKey globalKey = GlobalKey();
+
   final _textController = TextEditingController();
   String _dataQRCode = "";
 
@@ -32,16 +40,33 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
-          IconButton(icon: Icon(Icons.share), onPressed: share),
+          IconButton(
+            icon: Icon(Icons.share),
+            onPressed: shared,
+          ),
         ],
       ),
       body: _buildContent(),
     );
   }
 
-  void share() {
-    final channel = MethodChannel('cm.share/share');
-    channel.invokeListMethod('shareFile', 'image.png');
+  Future shared() async {
+    try {
+      RenderRepaintBoundary boundary =
+          globalKey.currentContext.findRenderObject();
+      var image = await boundary.toImage();
+      ByteData byteData = await image.toByteData(format: ImageByteFormat.png);
+      Uint8List pngBytes = byteData.buffer.asUint8List();
+
+      final tempDir = await getTemporaryDirectory();
+      final file = await File('${tempDir.path}/image.png').create();
+      await file.writeAsBytes(pngBytes);
+
+      final channel = MethodChannel('cm.share/share');
+      channel.invokeMethod('shareFile', 'image.png');
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   _buildContent() => Padding(
@@ -56,13 +81,16 @@ class _GenerateQRCodePageState extends State<GenerateQRCodePage> {
             SizedBox(
               height: 40,
             ),
-            QrImage(
-              backgroundColor: Colors.white,
-              data: _dataQRCode,
-              size: 150,
-              onError: (exception) {
-                print("Error QR Code: $exception");
-              },
+            RepaintBoundary(
+              key: globalKey,
+              child: QrImage(
+                backgroundColor: Colors.white,
+                data: _dataQRCode,
+                size: 150,
+                onError: (exception) {
+                  print("Error QR Code: $exception");
+                },
+              ),
             ),
           ],
         ),
